@@ -1,64 +1,136 @@
 # TaskFlow — Challenge (Node + TypeScript + Express + Drizzle + Bun)
 
-Descripción
-- API REST sencilla para gestionar proyectos y tareas. Pensada como challenge para portfolio usando Bun, TypeScript, Express y Drizzle ORM.
+Description
+- Simple REST API to manage projects and tasks. Built as a portfolio challenge using Bun, TypeScript, Express and Drizzle ORM. Includes basic JWT authentication, migrations and seeds for example data.
 
-Requisitos
-- Bun (https://bun.sh)
-- PostgreSQL (o SQLite para modo demo)
-- Node.js solo si quieres usar npm/yarn (opcional)
+Technologies
+- Bun (runtime/package manager/task runner)
+- TypeScript
+- Express
+- Drizzle ORM
+- PostgreSQL (recommended) / SQLite (demo mode)
+- JWT for authentication
 
-Instalación rápida (Postgres)
-1. Clona el repo
-   bun install
-2. Crea archivo .env (ejemplo .env.example)
-   DATABASE_URL=postgres://user:pass@localhost:5432/taskflow
-   JWT_SECRET=un-secret-largo
-3. Corre migrations y seeds
-   bun run migrate
-   bun run seed
-4. Levanta en modo dev
-   bun run dev
-5. Accede a http://localhost:3000
+Requirements
+- Bun: https://bun.sh
+- PostgreSQL (or SQLite for demo)
+- Node.js only if you prefer npm/yarn (optional)
 
-Scripts (package.json)
-- dev: correr servidor en modo desarrollo
-- build: compilar/transpilar (si aplica)
-- migrate: correr migraciones Drizzle
-- seed: cargar datos de ejemplo
-- test: ejecutar tests
+Status
+- Challenge / demo: functional as an example and a base to extend for a portfolio.
 
-Endpoints principales (resumen)
-- POST /auth/register
-- POST /auth/login
-- GET /projects
-- POST /projects
-- GET /projects/:id
-- PUT /projects/:id
-- DELETE /projects/:id
-- GET /projects/:projectId/tasks
-- POST /projects/:projectId/tasks
-- GET /tasks/:id
-- PUT /tasks/:id
-- DELETE /tasks/:id
+Quick installation (Postgres)
+1. Clone the repository
+```bash
+git clone <repo-url>
+cd <repo-directory>
+```
+2. Install dependencies with Bun
+```bash
+bun install
+```
+3. Create a `.env` file from `.env.example` and set the variables:
+```env
+# .env
+DATABASE_URL=postgres://user:pass@localhost:5432/taskflow
+JWT_SECRET=a-long-secure-secret
+PORT=3000
+```
+4. Run migrations and seeds
+```bash
+bun run migrate
+bun run seed
+```
+5. Start the app in development
+```bash
+bun run dev
+```
+6. Visit the API:
+http://localhost:3000
 
-Estructura sugerida
-- src/
-  - server.ts
-  - app.ts
-  - routes/
-  - controllers/
-  - services/
-  - db/
-  - models/
-  - tests/
-- prisma/ or migrations/ (dependiendo de Drizzle)
-- .github/ (templates para issues/PRs)
-- README.md
-- SPEC.md
+Demo mode with SQLite
+- To try without PostgreSQL, use a `.env` like:
+```env
+DATABASE_URL=file:./dev.db
+JWT_SECRET=a-long-secure-secret
+PORT=3000
+```
+- Run the same migrate/seed and dev commands (depending on project configuration).
 
-Consejos para portfolio
-- Incluye capturas de pantalla de Postman o Swagger
-- Añade un GIF corto mostrando endpoints funcionando
-- Documenta decisiones técnicas (por qué Drizzle, por qué Bun)
-- Muestra commits atómicos y PRs (si es posible)
+Environment variables (main)
+- DATABASE_URL: database connection URL (Postgres or SQLite).
+  - Postgres example: `postgres://user:pass@localhost:5432/taskflow`
+  - SQLite example: `file:./dev.db`
+- JWT_SECRET: long secret used to sign JWT tokens.
+- PORT: server port (default 3000).
+
+NPM / Bun scripts (package.json)
+- dev: run server in development mode
+- build: compile/transpile (if applicable)
+- migrate: run Drizzle migrations
+- seed: load example data
+- test: run tests
+
+Common commands
+```bash
+bun run dev        # development
+bun run build      # build (if applicable)
+bun run migrate    # apply migrations
+bun run seed       # seed DB with example data
+bun run test       # run tests
+```
+
+Main endpoints (summary)
+- POST /auth/register — register user (body: { name, email, password })
+- POST /auth/login — login (body: { email, password }) => returns JWT
+- GET /projects — list projects (auth required)
+- POST /projects — create project (auth required)
+- GET /projects/:id — view project by id (auth required)
+- PUT /projects/:id — update project (auth required)
+- DELETE /projects/:id — delete project (auth required)
+- GET /projects/:projectId/tasks — list tasks in a project (auth required)
+- POST /projects/:projectId/tasks — create task in project (auth required)
+- GET /tasks/:id — view task by id (auth required)
+- PUT /tasks/:id — update task (auth required)
+- DELETE /tasks/:id — delete task (auth required)
+
+Basic usage examples (curl)
+- Register:
+```bash
+curl -X POST http://localhost:3000/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{"name":"User","email":"user@example.com","password":"secret"}'
+```
+- Login:
+```bash
+curl -X POST http://localhost:3000/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"user@example.com","password":"secret"}'
+# Response includes token: { "token": "..." }
+```
+- Create project (use returned token in Authorization header):
+```bash
+curl -X POST http://localhost:3000/projects \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <TOKEN>" \
+  -d '{"title":"Demo Project","description":"Description"}'
+```
+
+Migrations & Seeds
+- Migrations are handled with Drizzle (or the tool documented in SPEC.md).
+- `bun run migrate` should apply migrations.
+- `bun run seed` should populate example users, projects and tasks.
+
+Contributing
+- Read SPEC.md before proposing changes.
+- Open issues for bugs or improvements and submit PRs with clear descriptions.
+- Follow the project's code style if linters/formatters are configured.
+
+License
+- MIT (or your chosen license). Add a LICENSE file if applicable.
+
+Contact
+- Add your contact info or link to your GitHub profile.
+
+Notes
+- Adjust commands, script names and migration details to match the concrete implementation in this repository.
